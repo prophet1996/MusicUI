@@ -1,16 +1,17 @@
 package innoviz.niec.com.musicui.AppFragments;
 
 import android.app.ActionBar;
-import android.content.Context;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,26 +25,61 @@ import innoviz.niec.com.musicui.R;
 public class ListenNowFrag extends android.support.v4.app.Fragment {
 
 
-    private ViewPager mViewPager;
-    private ListenPagerAdapter mListenPagerAdapter;
-    private TabLayout mTablayout;
+    private static final String IMAGEVIEW_TAG = "icon bitmap";
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
+        if(savedInstanceState!=null||container==null) {
+            return null;
+        }
         View v = inflater.inflate(R.layout.listen_now_frag, container, false);
+        final ViewPager mViewPager;
+        ListenPagerAdapter mListenPagerAdapter;
+        final TabLayout mTablayout;
 
         mListenPagerAdapter = new ListenPagerAdapter(getActivity().getSupportFragmentManager());
-        final ActionBar actionBar = getActivity().getActionBar();
         mViewPager = (ViewPager) v.findViewById(R.id.view_pager);
         mViewPager.setAdapter(mListenPagerAdapter);
         mTablayout=(TabLayout)v.findViewById(R.id.tabs);
-        mTablayout.setupWithViewPager(mViewPager);
+        mTablayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mTablayout.setupWithViewPager(mViewPager);
+            }
+        });
+        FloatingActionButton fab=(FloatingActionButton) v.findViewById(R.id.fab);
+        fab.setTag(IMAGEVIEW_TAG);
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+              //  ClipData.Item item = new ClipData.Item(v.getTag());
+               // ClipData dragData = new ClipData(v.getTag(),ClipData.MIMETYPE_TEXT_PLAIN,item);
+            return  true;
+            }
+        });
+        fab.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                Toast.makeText(getActivity(), "dragged", Toast.LENGTH_SHORT).show();
+                Log.d("drag","drag");
+                return true;
+            }
+        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         return v;
     }
 
-    public class ListenPagerAdapter extends FragmentStatePagerAdapter    {
+    public class ListenPagerAdapter extends FragmentPagerAdapter    {
         public ListenPagerAdapter(FragmentManager fm) {
             super(fm);
 
@@ -54,20 +90,20 @@ public class ListenNowFrag extends android.support.v4.app.Fragment {
 
             switch (position) {
                 case 0:
-                    AllSongsFrag fg = new AllSongsFrag();
+
                     Log.d("AllSongs","fg1");
-                    return fg;
+                    return new AllSongsFrag();
 
                 case 1:
-                    AllSongsFrag fg1 = new AllSongsFrag();
+
                     Log.d("AllSongs","fg2");
-                    return fg1;
+                    return new AllSongsFrag();
 
 
                 case 2:
-                    AllSongsFrag fg2 = new AllSongsFrag();
+
                     Log.d("AllSongs","fg3");
-                    return fg2;
+                    return new AllSongsFrag();
 
 
 
